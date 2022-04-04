@@ -1,0 +1,63 @@
+#home {
+
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+
+    .aside-contacts {
+        left: 0;
+        width: 35%;
+        background: #111b21;
+
+        //border-right: 1px solid rgba(255, 255, 255, 0.1);
+
+        .aside-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding-left: 20px;
+            padding-right: 20px;
+
+            background: #202c33;
+            height: 59px;
+
+            border-right: 1px solid rgba(134, 150, 160, 0.15);
+            color: #e9efed;
+
+            .user-image-name {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+
+                >img {
+                    height: 40px;
+                    width: 40px;
+
+                    border-radius: 100px;
+                }
+            }
+        }
+    }
+
+    .chat-screen {
+        right: 0;
+        width: 65%;
+        background: #111b21;
+
+        .main-header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            padding-left: 10px;
+            gap: 20px;
+
+            background: #202c33;
+            height: 59px;
+
+            color: #e9efed;
+        }
+    }
+
+}
