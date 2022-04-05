@@ -6,16 +6,6 @@ export function Home() {
 
     const { user, singInWithGoogle } = useAuth();
 
-    /* useEffect(() => {
-        async function signIn(){
-            if(!user) {
-                await singInWithGoogle();
-                //console.log('user uid: ', user!.id)
-            }
-        }
-        signIn();
-    }); */
-
     return (
         <div id="home">
             <aside className="aside-contacts">

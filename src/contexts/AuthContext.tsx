@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
-import { GoogleAuthProvider, auth, signInWithPopup, signInWithRedirect } from '../services/firebase';
+import { GoogleAuthProvider, auth, signInWithPopup } from '../services/firebase';
+import { database, doc, getDoc, setDoc } from '../services/firebase';
 
 type User = {
     id: string,
@@ -56,21 +57,31 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
       // Autenticação no firebase usando google
       const provider = new GoogleAuthProvider();
   
-      const result = await signInWithPopup(auth, provider);
-  
-      if(result.user) {
-        const { displayName, photoURL, uid} = result.user;
-  
-        if(!displayName || !photoURL) {
-          throw new Error('Missing information from Google Account.')
+      await signInWithPopup(auth, provider).then(async result => {
+        if(result.user) {
+          const { displayName, photoURL, uid, email} = result.user;
+    
+          if(!displayName || !photoURL) {
+            throw new Error('Missing information from Google Account.')
+          }
+
+          const docRef = doc(database, 'users', email!);
+          const docSnap = await getDoc(docRef);
+          if(!docSnap.exists()) {
+              console.log('cadastrando usuário');
+              await setDoc(docRef, {
+                  username: displayName,
+                  userphoto: photoURL
+              });
+          }
+    
+          setUser({
+            id: uid,
+            name: displayName,
+            avatar: photoURL
+          });
         }
-  
-        setUser({
-          id: uid,
-          name: displayName,
-          avatar: photoURL
-        });
-      }
+      });
     };
 
     return (
