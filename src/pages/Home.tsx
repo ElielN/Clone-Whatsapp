@@ -1,19 +1,20 @@
-import { useEffect } from 'react';
-import '../styles/home.scss';
 import { useAuth } from '../hooks/useAuth';
+//import { onValue, ref } from '../services/firebase';
+import '../styles/home.scss';
 
 export function Home() {
 
     const { user, singInWithGoogle } = useAuth();
 
-    useEffect(() => {
+    /* useEffect(() => {
         async function signIn(){
             if(!user) {
                 await singInWithGoogle();
+                //console.log('user uid: ', user!.id)
             }
         }
         signIn();
-    });
+    }); */
 
     return (
         <div id="home">
@@ -31,6 +32,9 @@ export function Home() {
                     <span>IMG</span>
                     <span>NAME</span>
                 </header>
+                <div className='main-footer'>
+
+                </div>
             </main>
         </div>
     );

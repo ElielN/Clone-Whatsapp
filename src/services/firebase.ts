@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth" // New import
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect } from "firebase/auth" // New import
 import { getDatabase, ref, push, get, onValue, off, remove, update } from "firebase/database";
 
 const firebaseConfig = {
@@ -25,4 +25,4 @@ const firebase = initializeApp(firebaseConfig);
 const auth = getAuth(firebase);
 const database = getDatabase(firebase);
 
-export { update, remove, off, onValue, get, push, ref, auth, database, GoogleAuthProvider, signInWithPopup }
+export { update, remove, off, onValue, get, push, ref, auth, database, GoogleAuthProvider, signInWithPopup, signInWithRedirect }
