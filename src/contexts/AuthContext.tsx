@@ -6,6 +6,7 @@ type User = {
     id: string,
     name: string,
     avatar: string,
+    email: string,
 }
   
 type AuthContextType = {
@@ -31,7 +32,7 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
       // É recomendado salvar um event listener em uma variável
       const unsubscribe = auth.onAuthStateChanged(user => {
         if(user) {
-          const { displayName, photoURL, uid} = user;
+          const { displayName, photoURL, uid, email} = user;
   
           if(!displayName || !photoURL) {
             throw new Error('Missing information from Google Account.')
@@ -40,7 +41,8 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
           setUser({
             id: uid,
             name: displayName,
-            avatar: photoURL
+            avatar: photoURL,
+            email: email!
           });
         }
       });
@@ -78,7 +80,8 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
           setUser({
             id: uid,
             name: displayName,
-            avatar: photoURL
+            avatar: photoURL,
+            email: email!
           });
         }
       });

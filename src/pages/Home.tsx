@@ -4,10 +4,17 @@ import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertic
 //import { onValue, ref } from '../services/firebase';
 import '../styles/home.scss';
 import { ModalAddContact } from '../components/ModalAddContact';
+import { useState } from 'react';
 
 export function Home() {
 
+    const [modal, setModal] = useState<boolean>(false);
+
     const { user, singInWithGoogle } = useAuth();
+
+    function toggleModalState() {
+        setModal(modal ? false : true);
+    }
     
     return (
         <div id="home">
@@ -18,11 +25,15 @@ export function Home() {
                         <span>{user?.name}</span>
                     </div>
                     <span className='aside-header-icons'>
-                        <BsPersonPlusFill cursor={'pointer'} />
+                        <BsPersonPlusFill cursor={'pointer'} onClick={toggleModalState}/>
                         <BsThreeDotsVertical cursor={'pointer'}/>
                     </span>
                 </header>
-                <ModalAddContact />
+                {modal && (
+                    <ModalAddContact 
+                    changeState={() => toggleModalState}
+                    />
+                )}
             </aside>
             <main className="chat-screen">
                 <header className='main-header'>
