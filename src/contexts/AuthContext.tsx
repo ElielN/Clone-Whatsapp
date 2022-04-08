@@ -61,7 +61,7 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
         if(result.user) {
           const { displayName, photoURL, uid, email} = result.user;
     
-          if(!displayName || !photoURL) {
+          if(!displayName || !photoURL || !email) {
             throw new Error('Missing information from Google Account.')
           }
 
