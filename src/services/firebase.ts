@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth" // New import
-import { off, remove, update, set } from "firebase/database";
-import { doc, setDoc, getDoc, getFirestore, collection, query, where, addDoc } from "firebase/firestore";
+import { remove } from "firebase/database";
+import { doc, setDoc, getDoc, getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 
 
 const firebaseConfig = {
@@ -27,4 +27,4 @@ const firestore = initializeApp(firebaseConfig);
 const auth = getAuth(firestore);
 const database = getFirestore(firestore);
 
-export { update, remove, off, set, doc, setDoc, getDoc, collection, query, where, auth, database, GoogleAuthProvider, signInWithPopup }
+export { remove, doc, setDoc, getDoc, collection, query, where, getDocs, auth, database, GoogleAuthProvider, signInWithPopup }
