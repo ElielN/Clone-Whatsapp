@@ -1,8 +1,39 @@
 .contact-card {
-    display: flex;
     width: 100%;
     height: 70px;
+    
+    display: flex;
+    align-items: center;
 
-    background: #fff;
+    background: #111b21;
+    color: #e9efed;
+
+    gap: 20px;
+    padding-left: 20px;
+    font-weight: 400;
+
+    &:hover {
+        background: #202c33;
+    }
+
+    cursor: pointer;
+
+    .username-container {
+        display: flex;
+        align-items: center;
+
+        border-right: 1px solid rgba(134, 150, 160, 0.15);
+        border-bottom: 1px solid rgba(134, 150, 160, 0.15);
+
+        height: 100%;
+        width: 100%;
+    }
+
+    >img {
+        height: 40px;
+        width: 40px;
+
+        border-radius: 100px;
+    }
 
 }

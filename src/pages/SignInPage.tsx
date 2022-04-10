@@ -9,7 +9,6 @@ export function SignInPage() {
     const { user, singInWithGoogle } = useAuth();
 
     async function signIn(){
-        console.log('clicou')
         if(!user) {
             await singInWithGoogle();
         }

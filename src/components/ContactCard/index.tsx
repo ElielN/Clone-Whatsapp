@@ -8,7 +8,10 @@ type contactCardType = {
 export function ContactCard({username, avatar} : contactCardType) {
     return (
         <div className="contact-card">
-            <h1>card</h1>
+            <img src={avatar} alt='avatar' />
+            <div className='username-container'>
+                <span>{username}</span>
+            </div>
         </div>
     );
 }

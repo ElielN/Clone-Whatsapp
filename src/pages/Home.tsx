@@ -18,6 +18,8 @@ export function Home() {
     const [modal, setModal] = useState<boolean>(false);
     const [contacts, setContacts] = useState<contactType[]>([]);
 
+    //const contactsRef = useRef<contactType[]>([]);
+
     const { user, singInWithGoogle } = useAuth();
 
     function toggleModalState() {
@@ -30,14 +32,24 @@ export function Home() {
             username: '',
             avatar: ''
         }
+
         const q = query(collection(database, `users/${user?.email}/contacts`)); 
-        const querySnapshot = await getDocs(q);
+        await getDocs(q).then(querySnapshot => {
+            setContacts([]);
+            querySnapshot.forEach((doc) => {
+                contactBase.id = doc.id;
+                contactBase.username = doc.data().username;
+                contactBase.avatar = doc.data().userphoto;
+                setContacts(c => [...c, contactBase]);
+            });
+        });
+        /* const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             contactBase.id = doc.id;
             contactBase.username = doc.data().username;
             contactBase.avatar = doc.data().userphoto;
             setContacts(c => [...c, contactBase]);
-        });
+        }); */
     },[user?.email]);
 
     useEffect(() => {
