@@ -1,11 +1,15 @@
 import { useAuth } from '../hooks/useAuth';
 import { BsPersonPlusFill } from "@react-icons/all-files/bs/BsPersonPlusFill";
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
+import { GiMagnifyingGlass } from '@react-icons/all-files/gi/GiMagnifyingGlass';
+import { FiPaperclip } from '@react-icons/all-files/fi/FiPaperclip'
 import { ModalAddContact } from '../components/ModalAddContact';
 import { database, query, collection, where, doc, getDocs } from '../services/firebase';
-import { useCallback, useEffect, useState } from 'react';
-import '../styles/home.scss';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { ContactCard } from '../components/ContactCard';
+
+import '../styles/home.scss';
+import { ContactContext } from '../contexts/ContactContext';
 
 type contactType = {
     id: string,
@@ -17,42 +21,53 @@ export function Home() {
 
     const [modal, setModal] = useState<boolean>(false);
     const [contacts, setContacts] = useState<contactType[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
 
-    //const contactsRef = useRef<contactType[]>([]);
+    const contactsRef = useRef<contactType[]>([]);
 
     const { user, singInWithGoogle } = useAuth();
+    const { currentContact } = useContext(ContactContext);
 
     function toggleModalState() {
         setModal(modal ? false : true);
     }
 
     const handleLoadContacts = useCallback(async () => {
+        setLoading(true);
+        contactsRef.current = [];
+        setContacts(contactsRef.current);
         let contactBase : contactType = {
             id: '',
             username: '',
             avatar: ''
         }
 
-        const q = query(collection(database, `users/${user?.email}/contacts`)); 
+        const q = query(collection(database, `users/${user?.email}/contacts`));
         await getDocs(q).then(querySnapshot => {
-            setContacts([]);
+            contactsRef.current = [];
+            setContacts(contactsRef.current);
             querySnapshot.forEach((doc) => {
+                contactBase = {
+                    id: '',
+                    username: '',
+                    avatar: ''
+                }
                 contactBase.id = doc.id;
                 contactBase.username = doc.data().username;
                 contactBase.avatar = doc.data().userphoto;
-                setContacts(c => [...c, contactBase]);
+                contactsRef.current.push(contactBase);
+                //setContacts(c => [...c, contactBase]);
             });
+        }).then(after => {
+            setContacts(contactsRef.current);
+        }).then(a => {
+            setTimeout(() => {setLoading(false)},300);  
         });
-        /* const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            contactBase.id = doc.id;
-            contactBase.username = doc.data().username;
-            contactBase.avatar = doc.data().userphoto;
-            setContacts(c => [...c, contactBase]);
-        }); */
     },[user?.email]);
 
     useEffect(() => {
+        setLoading(true);
+        //setTimeout(() => {setLoading(false)},300); 
         handleLoadContacts();
     },[handleLoadContacts]);
     
@@ -74,25 +89,44 @@ export function Home() {
                     changeState={() => toggleModalState}
                     />
                 )}
-                <div className='column-contacts'>
-                    {contacts.map(contact => {
-                        return (
-                            <ContactCard
-                            key={contact.id} 
-                            username={contact.username}
-                            avatar={contact.avatar}
-                            />
-                        );
-                    })}
+                <div className='aside-search'>
+                    <div className='search-input'>
+                        <GiMagnifyingGlass 
+                        />
+                        <input placeholder='Search here'/>
+                    </div>
                 </div>
+                {!loading && (
+                    <div className='column-contacts'>
+                        {contacts.map(contact => {
+                            return (
+                                <ContactCard
+                                key={contact.id} 
+                                username={contact.username}
+                                avatar={contact.avatar}
+                                email={contact.id}
+                                />
+                            );
+                        })}
+                    </div>
+                )}
             </aside>
             <main className="chat-screen">
                 <header className='main-header'>
-                    <span>IMG</span>
-                    <span>NAME</span>
+                    <div className='main-header-content'>
+                        <img src={currentContact?.avatar} alt=''/>
+                        <span>{currentContact?.name}</span>
+                    </div>
                 </header>
                 <div className='main-footer'>
-
+                    <div className='footer-content'>
+                        <FiPaperclip 
+                        cursor={'pointer'}
+                        />
+                        <div className='footer-message-input'>
+                            <input placeholder='Message'/>
+                        </div>
+                    </div>
                 </div>
             </main>
         </div>

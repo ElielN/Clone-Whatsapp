@@ -45,6 +45,43 @@
             }
         }
 
+        .aside-search {
+            display: flex;
+            width: 100%;
+            height: 49px;
+
+            align-items: center;
+            justify-content: center;
+
+            background: transparent;
+            border-right: 1px solid rgba(134, 150, 160, 0.15);
+            border-bottom: 1px solid rgba(134, 150, 160, 0.15);
+
+            .search-input {
+                color: #8696a0;
+                display: flex;
+                width: 92%;
+                height: 35px;
+
+                align-items: center;
+
+                gap: 25px;
+                padding: 0px 20px 0px 20px;
+
+                border-radius: 8px;
+                background: #202c33;
+
+
+                >input {
+                    border: 0;
+                    background: #202c33;
+                    color: #e9efed;
+                    width: 100%;
+                    outline: none;
+                }
+            }
+        }
+
         .column-contacts {
             display: flex;
             flex-direction: column;
@@ -54,32 +91,83 @@
     .chat-screen {
         right: 0;
         width: 65%;
-        background: #111b21;
+
         display: flex;
         flex-direction: column;
 
-        .main-header {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
+        background: #111b21;
 
-            padding-left: 10px;
-            gap: 20px;
+        .main-header {
+            height: 59px;
+            width: 100%;
+
+            position: fixed;
+            top: 0;
 
             background: #202c33;
-            height: 59px;
 
-            color: #e9efed;
+            .main-header-content {
+                height: 100%;
+                width: 100%;
+
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+
+                padding-left: 20px;
+                gap: 20px;
+
+                color: #e9efed;
+
+                >img {
+                    height: 40px;
+                    width: 40px;
+    
+                    border-radius: 100px;
+                }
+            }
+
         }
 
         .main-footer {
+            width: 100%;
+            height: 60px;
+
             position: fixed;
             align-items: center;
             bottom: 0;
             
-            width: 100%;
-            height: 59px;
             background: #202c33;
+
+            .footer-content {
+                height: 100%;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                padding-left: 30px;
+                gap: 25px;
+                color: #8696a0;
+
+                .footer-message-input {
+                    //color: #e9efed;
+                    display: flex;
+                    height: 45px;
+                    width: 55%;
+                    padding: 0px 20px 0px 20px;
+                    background: #2a3942;
+
+                    border-radius: 8px;
+
+                    >input {
+                        border: 0;
+                        background-color: #2a3942;
+                        color: #e9efed;
+                        width: 100%;
+                        outline: none;
+                        font-size: 1.5rem;
+                    }
+                }
+            }
         }
     }
 
