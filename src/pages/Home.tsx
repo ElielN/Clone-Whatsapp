@@ -7,6 +7,7 @@ import { ModalAddContact } from '../components/ModalAddContact';
 import { database, query, collection, where, doc, getDocs } from '../services/firebase';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { ContactCard } from '../components/ContactCard';
+import whatsappBackground from '../assets/images/wpp_background.png';
 
 import '../styles/home.scss';
 import { ContactContext } from '../contexts/ContactContext';
@@ -73,62 +74,74 @@ export function Home() {
     
     return (
         <div id="home">
-            <aside className="aside-contacts">
-                <header className='aside-header'>
-                    <div className='user-image-name'>
-                        <img src={user?.avatar} alt='avatar'/>
-                        <span>{user?.name}</span>
-                    </div>
-                    <span className='aside-header-icons'>
-                        <BsPersonPlusFill cursor={'pointer'} onClick={toggleModalState}/>
-                        <BsThreeDotsVertical cursor={'pointer'}/>
-                    </span>
-                </header>
-                {modal && (
-                    <ModalAddContact 
-                    changeState={() => toggleModalState}
-                    />
-                )}
-                <div className='aside-search'>
-                    <div className='search-input'>
-                        <GiMagnifyingGlass 
+            <div className='home-background'>
+                <aside className="aside-contacts">
+                    <header className='aside-header'>
+                        <div className='user-image-name'>
+                            <img src={user?.avatar} alt='avatar'/>
+                            <span>{user?.name}</span>
+                        </div>
+                        <span className='aside-header-icons'>
+                            <BsPersonPlusFill cursor={'pointer'} onClick={toggleModalState}/>
+                            <BsThreeDotsVertical cursor={'pointer'}/>
+                        </span>
+                    </header>
+                    {modal && (
+                        <ModalAddContact 
+                        changeState={() => toggleModalState}
                         />
-                        <input placeholder='Search here'/>
-                    </div>
-                </div>
-                {!loading && (
-                    <div className='column-contacts'>
-                        {contacts.map(contact => {
-                            return (
-                                <ContactCard
-                                key={contact.id} 
-                                username={contact.username}
-                                avatar={contact.avatar}
-                                email={contact.id}
-                                />
-                            );
-                        })}
-                    </div>
-                )}
-            </aside>
-            <main className="chat-screen">
-                <header className='main-header'>
-                    <div className='main-header-content'>
-                        <img src={currentContact?.avatar} alt=''/>
-                        <span>{currentContact?.name}</span>
-                    </div>
-                </header>
-                <div className='main-footer'>
-                    <div className='footer-content'>
-                        <FiPaperclip 
-                        cursor={'pointer'}
-                        />
-                        <div className='footer-message-input'>
-                            <input placeholder='Message'/>
+                    )}
+                    <div className='aside-search'>
+                        <div className='search-input'>
+                            <GiMagnifyingGlass 
+                            />
+                            <input placeholder='Search here'/>
                         </div>
                     </div>
-                </div>
-            </main>
+                    {!loading && (
+                        <div className='column-contacts'>
+                            {contacts.map(contact => {
+                                return (
+                                    <ContactCard
+                                    key={contact.id} 
+                                    username={contact.username}
+                                    avatar={contact.avatar}
+                                    email={contact.id}
+                                    />
+                                );
+                            })}
+                        </div>
+                    )}
+                </aside>
+                <main className="chat-screen">
+                    <header className='main-header'>
+                        <div className='main-header-content'>
+                            <img src={currentContact?.avatar} alt=''/>
+                            <span>{currentContact?.name}</span>
+                        </div>
+                    </header>
+                    <div className='chat' style={{
+                    backgroundImage: 'url('+whatsappBackground + ')',
+                    backgroundPosition: 'center',
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundColor: 'rgb(11, 20, 26)',
+                    opacity: 0.05,
+                    }}>
+
+                    </div>
+                    <div className='main-footer'>
+                        <div className='footer-content'>
+                            <FiPaperclip 
+                            cursor={'pointer'}
+                            />
+                            <div className='footer-message-input'>
+                                <input placeholder='Message'/>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
         </div>
     );
 }
