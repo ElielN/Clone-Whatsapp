@@ -23,6 +23,7 @@ export function Home() {
     const [modal, setModal] = useState<boolean>(false);
     const [contacts, setContacts] = useState<contactType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [message, setMessage] = useState<string>('');
 
     const contactsRef = useRef<contactType[]>([]);
 
@@ -136,7 +137,7 @@ export function Home() {
                             cursor={'pointer'}
                             />
                             <div className='footer-message-input'>
-                                <input placeholder='Message'/>
+                                <textarea placeholder='Message' value={message} onChange={(event) => setMessage(event.target.value)}/>
                             </div>
                         </div>
                     </div>

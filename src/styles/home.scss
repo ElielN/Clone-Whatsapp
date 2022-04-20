@@ -180,13 +180,15 @@
     
                         border-radius: 8px;
     
-                        >input {
+                        >textarea {
                             border: 0;
                             background-color: #2a3942;
                             color: #e9efed;
                             width: 100%;
                             outline: none;
+                            resize: none;
                             font-size: 1.5rem;
+                            scrollbar-width: 100px;
                         }
                     }
                 }
