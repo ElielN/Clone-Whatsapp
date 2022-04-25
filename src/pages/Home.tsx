@@ -4,7 +4,7 @@ import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertic
 import { GiMagnifyingGlass } from '@react-icons/all-files/gi/GiMagnifyingGlass';
 import { FiPaperclip } from '@react-icons/all-files/fi/FiPaperclip'
 import { ModalAddContact } from '../components/ModalAddContact';
-import { database, query, collection, where, doc, getDocs } from '../services/firebase';
+import { database, query, collection, where, doc, getDocs, getDoc, addDoc } from '../services/firebase';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { ContactCard } from '../components/ContactCard';
 import whatsappBackground from '../assets/images/wpp_background.png';
@@ -18,6 +18,11 @@ type contactType = {
     avatar: string
 };
 
+type newMessageType = {
+    sender: string | undefined,
+    message: string
+}
+
 export function Home() {
 
     const [modal, setModal] = useState<boolean>(false);
@@ -30,8 +35,25 @@ export function Home() {
     const { user, singInWithGoogle } = useAuth();
     const { currentContact } = useContext(ContactContext);
 
-    function handleSendMessage() {
-        setMessage('');
+    async function handleSendMessage() {
+        if(currentContact?.email === '') {
+            setMessage('');
+            return;
+        } else {
+            if(message === '') {
+                return
+            } else {
+                const newMessage : newMessageType = {
+                    sender: user?.email,
+                    message: message,
+                }
+                const docRefMessage = await addDoc(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`), newMessage);
+                const docRefMessageBack = await addDoc(collection(database, `users/${currentContact?.email}/contacts/${user?.email}/messages`), newMessage);
+                //const docRefMessageSnap = await getDoc(docRefMessage);
+    
+                setMessage('');
+            }
+        }
     }
 
     function handleKeyPress(event : any) {
