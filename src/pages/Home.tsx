@@ -30,6 +30,16 @@ export function Home() {
     const { user, singInWithGoogle } = useAuth();
     const { currentContact } = useContext(ContactContext);
 
+    function handleSendMessage() {
+        setMessage('');
+    }
+
+    function handleKeyPress(event : any) {
+        if(event.key === 'Enter') {
+            handleSendMessage();
+        }
+    }
+
     function toggleModalState() {
         setModal(modal ? false : true);
     }
@@ -137,7 +147,7 @@ export function Home() {
                             cursor={'pointer'}
                             />
                             <div className='footer-message-input'>
-                                <textarea placeholder='Message' value={message} onChange={(event) => setMessage(event.target.value)}/>
+                                <input placeholder='Message' onKeyDown={handleKeyPress} value={message} onChange={(event) => setMessage(event.target.value)}/>
                             </div>
                         </div>
                     </div>
