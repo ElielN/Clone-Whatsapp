@@ -148,10 +148,12 @@ export function Home() {
                 </aside>
                 <main className="chat-screen">
                     <header className='main-header'>
+                        {currentContact?.name !== '' && (
                         <div className='main-header-content'>
                             <img src={currentContact?.avatar} alt=''/>
                             <span>{currentContact?.name}</span>
                         </div>
+                        )}
                     </header>
                     <div className='chat' style={{
                     backgroundImage: 'url('+whatsappBackground + ')',

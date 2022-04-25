@@ -1,0 +1,20 @@
+.message-row-area {
+    display: flex;
+    width: 100%;
+    height: 50px;
+    background: red;
+
+    .message-container {
+        height: 100%;
+        width: fit-content;
+        background: blue;
+    }
+}
+
+.left {
+    justify-content: left;
+}
+
+.right {
+    justify-content: right;
+}
