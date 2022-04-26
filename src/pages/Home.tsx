@@ -11,6 +11,7 @@ import whatsappBackground from '../assets/images/wpp_background.png';
 
 import '../styles/home.scss';
 import { ContactContext } from '../contexts/ContactContext';
+import { Message } from '../components/Message';
 
 type contactType = {
     id: string,
@@ -23,14 +24,23 @@ type newMessageType = {
     message: string
 }
 
+type messageChatType = {
+    id: string,
+    sender: string | undefined,
+    message: string
+}
+
 export function Home() {
 
     const [modal, setModal] = useState<boolean>(false);
     const [contacts, setContacts] = useState<contactType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [loadingMessages, setLoadingMessages] = useState<boolean>(true);
     const [message, setMessage] = useState<string>('');
+    const [messagesChat, setMessagesChat] = useState<messageChatType[]>([]);
 
     const contactsRef = useRef<contactType[]>([]);
+    const messagesChatRef = useRef<messageChatType[]>([]);
 
     const { user, singInWithGoogle } = useAuth();
     const { currentContact } = useContext(ContactContext);
@@ -104,6 +114,42 @@ export function Home() {
         //setTimeout(() => {setLoading(false)},300); 
         handleLoadContacts();
     },[handleLoadContacts]);
+
+    useEffect(() => {
+        async function loadMessages() {
+            setLoadingMessages(true);
+            messagesChatRef.current = [];
+            setMessagesChat(messagesChatRef.current);
+            let messageBase : messageChatType = {
+                id: '',
+                sender: '',
+                message: ''
+            };
+            if(currentContact?.email !== ''){
+                const q = query(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`));
+                await getDocs(q).then(querySnapshot => {
+                    messagesChatRef.current = [];
+                    setMessagesChat(messagesChatRef.current);
+                    querySnapshot.forEach((doc) => {
+                        messageBase = {
+                            id: '',
+                            sender: '',
+                            message: ''
+                        };
+                        messageBase.id = doc.id;
+                        messageBase.sender = doc.data().sender;
+                        messageBase.message = doc.data().message;
+                        messagesChatRef.current.push(messageBase);
+                    })
+                }).then(after => {
+                    setMessagesChat(messagesChatRef.current);
+                }).then(a => {
+                    setTimeout(() => {setLoadingMessages(false)},300); 
+                })
+            }
+        }
+        loadMessages();
+    }, [currentContact?.email, user?.email])
     
     return (
         <div id="home">
@@ -163,7 +209,17 @@ export function Home() {
                     backgroundColor: 'rgb(11, 20, 26)',
                     opacity: 0.05,
                     }}>
-
+                    {currentContact?.email !== '' && (
+                        messagesChat.map(msg => {
+                            return (
+                                <Message 
+                                key={msg.id}
+                                sender={msg.sender}
+                                message={msg.message}
+                                />
+                            );
+                        })
+                    )}
                     </div>
                     <div className='main-footer'>
                         <div className='footer-content'>
