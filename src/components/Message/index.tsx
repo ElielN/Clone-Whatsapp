@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -30,3 +31,5 @@ export function Message({sender, message} : messageType) {
         </div>
     );
 }
+
+export const MemoizedMessage = React.memo(Message);

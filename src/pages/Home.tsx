@@ -7,11 +7,11 @@ import { ModalAddContact } from '../components/ModalAddContact';
 import { database, query, collection, where, doc, getDocs, getDoc, addDoc, orderBy, onSnapshot } from '../services/firebase';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { ContactCard } from '../components/ContactCard';
-import whatsappBackground from '../assets/images/wpp_background.png';
-
-import '../styles/home.scss';
 import { ContactContext } from '../contexts/ContactContext';
-import { Message } from '../components/Message';
+import { MemoizedMessage, Message } from '../components/Message';
+import whatsappBackground from '../assets/images/wpp_background.png';
+import ScrollToBottom from 'react-scroll-to-bottom';
+import '../styles/home.scss';
 
 type contactType = {
     id: string,
@@ -78,8 +78,6 @@ export function Home() {
                 }
                 const docRefMessage = await addDoc(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`), newMessage);
                 const docRefMessageBack = await addDoc(collection(database, `users/${currentContact?.email}/contacts/${user?.email}/messages`), newMessage);
-                //console.log(newMessage);
-                //const docRefMessageSnap = await getDoc(docRefMessage);
     
                 setMessage('');
             }
@@ -138,7 +136,6 @@ export function Home() {
     useEffect(() => {
         if(currentContact?.email !== ''){
             onSnapshot(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`), async (ndoc) => {
-                setLoadingMessages(true);
                 messagesChatRef.current = [];
                 setMessagesChat(messagesChatRef.current);
                 let messageBase : messageChatType = {
@@ -163,62 +160,10 @@ export function Home() {
                     })
                 }).then(after => {
                     setMessagesChat(messagesChatRef.current);
-                }).then(a => {
-                    setTimeout(() => {setLoadingMessages(false)},300); 
                 })
             })
         }
-
-
-
-
-
-        /* async function loadMessages() {
-            setLoadingMessages(true);
-            messagesChatRef.current = [];
-            setMessagesChat(messagesChatRef.current);
-            let messageBase : messageChatType = {
-                id: '',
-                sender: '',
-                message: ''
-            };
-            if(currentContact?.email !== ''){
-                const q = query(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`), orderBy("time"));
-                await getDocs(q).then(querySnapshot => {
-                    messagesChatRef.current = [];
-                    setMessagesChat(messagesChatRef.current);
-                    querySnapshot.forEach((doc) => {
-                        messageBase = {
-                            id: '',
-                            sender: '',
-                            message: ''
-                        };
-                        messageBase.id = doc.id;
-                        messageBase.sender = doc.data().sender;
-                        messageBase.message = doc.data().message;
-                        messagesChatRef.current.push(messageBase);
-                    })
-                }).then(after => {
-                    setMessagesChat(messagesChatRef.current);
-                }).then(a => {
-                    setTimeout(() => {setLoadingMessages(false)},300); 
-                })
-            }
-        }
-
-        //colocar o onSnapshot aqui. onSnapshot => chama a função loadMessages()
-        loadMessages(); */
-        
     }, [currentContact?.email, user?.email])
-
-    /* useEffect(() => {
-        if(currentContact?.email !== ''){
-            onSnapshot(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`), (doc) => {
-                console.log('new value');
-                return
-            })
-        }
-    },[currentContact?.email, user?.email]) */
     
     return (
         <div id="home">
@@ -279,11 +224,11 @@ export function Home() {
                     opacity: 0.05,
                     }}>
                     </div>
-                    <div className='chat'>
+                    <ScrollToBottom className='chat'>
                         {currentContact?.email !== '' && (
                             messagesChat.map(msg => {
                                 return (
-                                    <Message 
+                                    <MemoizedMessage 
                                     key={msg.id}
                                     sender={msg.sender}
                                     message={msg.message}
@@ -291,7 +236,7 @@ export function Home() {
                                 );
                             })
                         )}
-                    </div>
+                    </ScrollToBottom>
                     <div className='main-footer'>
                         <div className='footer-content'>
                             <FiPaperclip 
