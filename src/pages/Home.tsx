@@ -4,11 +4,11 @@ import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertic
 import { GiMagnifyingGlass } from '@react-icons/all-files/gi/GiMagnifyingGlass';
 import { FiPaperclip } from '@react-icons/all-files/fi/FiPaperclip'
 import { ModalAddContact } from '../components/ModalAddContact';
-import { database, query, collection, where, doc, getDocs, getDoc, addDoc, orderBy, onSnapshot } from '../services/firebase';
+import { database, query, collection, getDocs, addDoc, orderBy, onSnapshot } from '../services/firebase';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { ContactCard, MemoizedContactCard } from '../components/ContactCard';
+import { MemoizedContactCard } from '../components/ContactCard';
 import { ContactContext } from '../contexts/ContactContext';
-import { MemoizedMessage, Message } from '../components/Message';
+import { MemoizedMessage } from '../components/Message';
 import whatsappBackground from '../assets/images/wpp_background.png';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import '../styles/home.scss';
@@ -52,7 +52,7 @@ export function Home() {
     const contactsRef = useRef<contactType[]>([]);
     const messagesChatRef = useRef<messageChatType[]>([]);
 
-    const { user, singInWithGoogle } = useAuth();
+    const { user } = useAuth();
     const { currentContact } = useContext(ContactContext);
 
     async function handleSendMessage() {
@@ -75,8 +75,8 @@ export function Home() {
                         second: new Date().getSeconds()
                     }
                 }
-                const docRefMessage = await addDoc(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`), newMessage);
-                const docRefMessageBack = await addDoc(collection(database, `users/${currentContact?.email}/contacts/${user?.email}/messages`), newMessage);
+                await addDoc(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`), newMessage);
+                await addDoc(collection(database, `users/${currentContact?.email}/contacts/${user?.email}/messages`), newMessage);
     
                 setMessage('');
             }
