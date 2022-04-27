@@ -4,7 +4,7 @@ import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertic
 import { GiMagnifyingGlass } from '@react-icons/all-files/gi/GiMagnifyingGlass';
 import { FiPaperclip } from '@react-icons/all-files/fi/FiPaperclip'
 import { ModalAddContact } from '../components/ModalAddContact';
-import { database, query, collection, where, doc, getDocs, getDoc, addDoc, orderBy } from '../services/firebase';
+import { database, query, collection, where, doc, getDocs, getDoc, addDoc, orderBy, onSnapshot } from '../services/firebase';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { ContactCard } from '../components/ContactCard';
 import whatsappBackground from '../assets/images/wpp_background.png';
@@ -136,7 +136,44 @@ export function Home() {
     },[handleLoadContacts]);
 
     useEffect(() => {
-        async function loadMessages() {
+        if(currentContact?.email !== ''){
+            onSnapshot(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`), async (ndoc) => {
+                setLoadingMessages(true);
+                messagesChatRef.current = [];
+                setMessagesChat(messagesChatRef.current);
+                let messageBase : messageChatType = {
+                    id: '',
+                    sender: '',
+                    message: ''
+                };
+                const q = query(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`), orderBy("time"));
+                await getDocs(q).then(querySnapshot => {
+                    messagesChatRef.current = [];
+                    setMessagesChat(messagesChatRef.current);
+                    querySnapshot.forEach((doc) => {
+                        messageBase = {
+                            id: '',
+                            sender: '',
+                            message: ''
+                        };
+                        messageBase.id = doc.id;
+                        messageBase.sender = doc.data().sender;
+                        messageBase.message = doc.data().message;
+                        messagesChatRef.current.push(messageBase);
+                    })
+                }).then(after => {
+                    setMessagesChat(messagesChatRef.current);
+                }).then(a => {
+                    setTimeout(() => {setLoadingMessages(false)},300); 
+                })
+            })
+        }
+
+
+
+
+
+        /* async function loadMessages() {
             setLoadingMessages(true);
             messagesChatRef.current = [];
             setMessagesChat(messagesChatRef.current);
@@ -170,9 +207,18 @@ export function Home() {
         }
 
         //colocar o onSnapshot aqui. onSnapshot => chama a função loadMessages()
-
-        loadMessages();
+        loadMessages(); */
+        
     }, [currentContact?.email, user?.email])
+
+    /* useEffect(() => {
+        if(currentContact?.email !== ''){
+            onSnapshot(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`), (doc) => {
+                console.log('new value');
+                return
+            })
+        }
+    },[currentContact?.email, user?.email]) */
     
     return (
         <div id="home">
