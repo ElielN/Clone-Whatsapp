@@ -12,7 +12,7 @@ export function ModalAddContact({changeState} : changeStateType) {
 
     const [newContact, setNewContact] = useState<string>('');
 
-    const { user, singInWithGoogle } = useAuth();
+    const { user } = useAuth();
 
     async function handleAddContact() {
         if(newContact === user?.email) {
