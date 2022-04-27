@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { ContactContext } from '../../contexts/ContactContext';
 import './styles.scss';
 
@@ -31,3 +31,5 @@ export function ContactCard({username, avatar, email} : contactCardType) {
         </div>
     );
 }
+
+export const MemoizedContactCard = React.memo(ContactCard);

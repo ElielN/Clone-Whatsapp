@@ -11,7 +11,7 @@ type messageType = {
 
 export function Message({sender, message} : messageType) {
 
-    const [senderSide, setSenderSide] = useState<String>('');
+    const [senderSide, setSenderSide] = useState<String>('right');
 
     const { user } = useAuth();
 
@@ -31,5 +31,6 @@ export function Message({sender, message} : messageType) {
         </div>
     );
 }
+
 
 export const MemoizedMessage = React.memo(Message);

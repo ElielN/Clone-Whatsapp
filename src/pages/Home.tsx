@@ -6,7 +6,7 @@ import { FiPaperclip } from '@react-icons/all-files/fi/FiPaperclip'
 import { ModalAddContact } from '../components/ModalAddContact';
 import { database, query, collection, where, doc, getDocs, getDoc, addDoc, orderBy, onSnapshot } from '../services/firebase';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { ContactCard } from '../components/ContactCard';
+import { ContactCard, MemoizedContactCard } from '../components/ContactCard';
 import { ContactContext } from '../contexts/ContactContext';
 import { MemoizedMessage, Message } from '../components/Message';
 import whatsappBackground from '../assets/images/wpp_background.png';
@@ -46,7 +46,6 @@ export function Home() {
     const [modal, setModal] = useState<boolean>(false);
     const [contacts, setContacts] = useState<contactType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [loadingMessages, setLoadingMessages] = useState<boolean>(true);
     const [message, setMessage] = useState<string>('');
     const [messagesChat, setMessagesChat] = useState<messageChatType[]>([]);
 
@@ -129,7 +128,6 @@ export function Home() {
 
     useEffect(() => {
         setLoading(true);
-        //setTimeout(() => {setLoading(false)},300); 
         handleLoadContacts();
     },[handleLoadContacts]);
 
@@ -195,7 +193,7 @@ export function Home() {
                         <div className='column-contacts'>
                             {contacts.map(contact => {
                                 return (
-                                    <ContactCard
+                                    <MemoizedContactCard
                                     key={contact.id} 
                                     username={contact.username}
                                     avatar={contact.avatar}
@@ -224,7 +222,10 @@ export function Home() {
                     opacity: 0.05,
                     }}>
                     </div>
-                    <ScrollToBottom className='chat'>
+                    <ScrollToBottom 
+                    checkInterval={0}
+                    
+                    className='chat'>
                         {currentContact?.email !== '' && (
                             messagesChat.map(msg => {
                                 return (
