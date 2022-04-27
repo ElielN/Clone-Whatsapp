@@ -4,7 +4,7 @@ import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertic
 import { GiMagnifyingGlass } from '@react-icons/all-files/gi/GiMagnifyingGlass';
 import { FiPaperclip } from '@react-icons/all-files/fi/FiPaperclip'
 import { ModalAddContact } from '../components/ModalAddContact';
-import { database, query, collection, where, doc, getDocs, getDoc, addDoc } from '../services/firebase';
+import { database, query, collection, where, doc, getDocs, getDoc, addDoc, orderBy } from '../services/firebase';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { ContactCard } from '../components/ContactCard';
 import whatsappBackground from '../assets/images/wpp_background.png';
@@ -19,9 +19,20 @@ type contactType = {
     avatar: string
 };
 
+type timeType = {
+    day: number,
+    month: number,
+    year: number,
+    hour: number,
+    minute: number,
+    second: number
+
+}
+
 type newMessageType = {
     sender: string | undefined,
-    message: string
+    message: string,
+    time: timeType
 }
 
 type messageChatType = {
@@ -56,9 +67,18 @@ export function Home() {
                 const newMessage : newMessageType = {
                     sender: user?.email,
                     message: message,
+                    time: {
+                        day: new Date().getDate(),
+                        month: new Date().getMonth(),
+                        year: new Date().getFullYear(),
+                        hour: new Date().getHours(),
+                        minute: new Date().getMinutes(),
+                        second: new Date().getSeconds()
+                    }
                 }
                 const docRefMessage = await addDoc(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`), newMessage);
                 const docRefMessageBack = await addDoc(collection(database, `users/${currentContact?.email}/contacts/${user?.email}/messages`), newMessage);
+                //console.log(newMessage);
                 //const docRefMessageSnap = await getDoc(docRefMessage);
     
                 setMessage('');
@@ -126,7 +146,7 @@ export function Home() {
                 message: ''
             };
             if(currentContact?.email !== ''){
-                const q = query(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`));
+                const q = query(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`), orderBy("time"));
                 await getDocs(q).then(querySnapshot => {
                     messagesChatRef.current = [];
                     setMessagesChat(messagesChatRef.current);
@@ -148,6 +168,9 @@ export function Home() {
                 })
             }
         }
+
+        //colocar o onSnapshot aqui. onSnapshot => chama a função loadMessages()
+
         loadMessages();
     }, [currentContact?.email, user?.email])
     
@@ -201,7 +224,7 @@ export function Home() {
                         </div>
                         )}
                     </header>
-                    <div className='chat' style={{
+                    <div className='chat-image' style={{
                     backgroundImage: 'url('+whatsappBackground + ')',
                     backgroundPosition: 'center',
                     backgroundSize: 'cover',
@@ -209,17 +232,19 @@ export function Home() {
                     backgroundColor: 'rgb(11, 20, 26)',
                     opacity: 0.05,
                     }}>
-                    {currentContact?.email !== '' && (
-                        messagesChat.map(msg => {
-                            return (
-                                <Message 
-                                key={msg.id}
-                                sender={msg.sender}
-                                message={msg.message}
-                                />
-                            );
-                        })
-                    )}
+                    </div>
+                    <div className='chat'>
+                        {currentContact?.email !== '' && (
+                            messagesChat.map(msg => {
+                                return (
+                                    <Message 
+                                    key={msg.id}
+                                    sender={msg.sender}
+                                    message={msg.message}
+                                    />
+                                );
+                            })
+                        )}
                     </div>
                     <div className='main-footer'>
                         <div className='footer-content'>

@@ -1,28 +1,28 @@
 .message-row-area {
     display: flex;
     width: 100%;
-    height: 50px;
+    height: fit-content;
+    align-items: center;
+    z-index: 3;
+    
     color: #fff;
 
-    z-index: 3;
-
     &.message-row-area {
-        margin-top: 20px;
+        margin-top: 10px;
     }
 
     .message-container {
-        border-radius: 10px;
-        height: 100%;
-        width: fit-content;
-        background: blue;
         display: flex;
+        height: fit-content;
+        width: fit-content;
         align-items: center;
         margin-left: 20px;
         margin-right: 20px;
+        border-radius: 10px;
+        background: #176b5b;
 
         >span {
-            margin-left: 20px;
-            margin-right: 20px;
+            margin: 10px 20px 10px 20px;
         }
     }
 }
