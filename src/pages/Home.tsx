@@ -38,7 +38,8 @@ type newMessageType = {
 type messageChatType = {
     id: string,
     sender: string | undefined,
-    message: string
+    message: string,
+    time: timeType
 }
 
 export function Home() {
@@ -67,14 +68,15 @@ export function Home() {
                     sender: user?.email,
                     message: message,
                     time: {
-                        day: new Date().getDate(),
-                        month: new Date().getMonth(),
-                        year: new Date().getFullYear(),
-                        hour: new Date().getHours(),
-                        minute: new Date().getMinutes(),
-                        second: new Date().getSeconds()
+                        day: new Date().getUTCDate(),
+                        month: new Date().getUTCMonth(),
+                        year: new Date().getUTCFullYear(),
+                        hour: new Date().getUTCHours(),
+                        minute: new Date().getUTCMinutes(),
+                        second: new Date().getUTCSeconds()
                     }
                 }
+
                 await addDoc(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`), newMessage);
                 await addDoc(collection(database, `users/${currentContact?.email}/contacts/${user?.email}/messages`), newMessage);
     
@@ -139,23 +141,63 @@ export function Home() {
                 let messageBase : messageChatType = {
                     id: '',
                     sender: '',
-                    message: ''
+                    message: '',
+                    time: {
+                        day: -1,
+                        month: -1,
+                        year: -1,
+                        hour: -1,
+                        minute: -1,
+                        second: -1,
+                    },
                 };
                 const q = query(collection(database, `users/${user?.email}/contacts/${currentContact?.email}/messages`), orderBy("time"));
                 await getDocs(q).then(querySnapshot => {
+                    console.log(querySnapshot);
                     messagesChatRef.current = [];
                     setMessagesChat(messagesChatRef.current);
                     querySnapshot.forEach((doc) => {
                         messageBase = {
                             id: '',
                             sender: '',
-                            message: ''
+                            message: '',
+                            time: {
+                                day: -1,
+                                month: -1,
+                                year: -1,
+                                hour: -1,
+                                minute: -1,
+                                second: -1,
+                            },
                         };
                         messageBase.id = doc.id;
                         messageBase.sender = doc.data().sender;
                         messageBase.message = doc.data().message;
+
+                        messageBase.time.day = doc.data().time["day"];
+                        messageBase.time.hour = doc.data().time["hour"];
+                        messageBase.time.minute = doc.data().time["minute"];
+                        messageBase.time.month = doc.data().time["month"];
+                        messageBase.time.second = doc.data().time["second"];
+                        messageBase.time.year = doc.data().time["year"];
+
                         messagesChatRef.current.push(messageBase);
-                    })
+                    });
+                    messagesChatRef.current = messagesChatRef.current.sort(function(a : messageChatType, b : messageChatType) {
+                        if(a.time.year > b.time.year) return 1;
+                        else if(a.time.year < b.time.year) return -1;
+                        if(a.time.month > b.time.month) return 1;
+                        else if(a.time.month < b.time.month) return -1;
+                        if(a.time.day > b.time.day) return 1;
+                        else if(a.time.day < b.time.day) return -1;
+                        if(a.time.hour > b.time.hour) return 1;
+                        else if(a.time.hour < b.time.hour) return -1;
+                        if(a.time.minute > b.time.minute) return 1;
+                        else if(a.time.minute < b.time.minute) return -1;
+                        if(a.time.second > b.time.second) return 1;
+                        else if(a.time.second < b.time.second) return -1;
+                        return 1;
+                    });
                 }).then(after => {
                     setMessagesChat(messagesChatRef.current);
                 })
@@ -194,10 +236,10 @@ export function Home() {
                             {contacts.map(contact => {
                                 return (
                                     <MemoizedContactCard
-                                    key={contact.id} 
-                                    username={contact.username}
-                                    avatar={contact.avatar}
-                                    email={contact.id}
+                                        key={contact.id} 
+                                        username={contact.username}
+                                        avatar={contact.avatar}
+                                        email={contact.id}
                                     />
                                 );
                             })}
@@ -214,12 +256,12 @@ export function Home() {
                         )}
                     </header>
                     <div className='chat-image' style={{
-                    backgroundImage: 'url('+whatsappBackground + ')',
-                    backgroundPosition: 'center',
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundColor: 'rgb(11, 20, 26)',
-                    opacity: 0.05,
+                        backgroundImage: 'url('+whatsappBackground + ')',
+                        backgroundPosition: 'center',
+                        backgroundSize: 'cover',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundColor: 'rgb(11, 20, 26)',
+                        opacity: 0.05,
                     }}>
                     </div>
                     <ScrollToBottom 
